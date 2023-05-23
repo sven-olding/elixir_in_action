@@ -1,8 +1,6 @@
 defmodule TodoList do
   defstruct next_id: 1, entries: %{}
 
-  def new(), do: %TodoList{}
-
   def new(entries \\ []) do
     Enum.reduce(entries, %TodoList{}, fn entry, todo_list_acc ->
       add_entry(todo_list_acc, entry)
@@ -46,5 +44,21 @@ defmodule TodoList do
       todo_list
       | entries: new_entries
     }
+  end
+end
+
+defmodule TodoList.CsvImporter do
+  def import(path) do
+    File.stream!(path)
+    |> Stream.map(&String.trim_trailing(&1, "\n"))
+    |> Stream.map(&String.split(&1, ","))
+    |> Enum.reduce(TodoList.new(), fn csv_entry, new_list -> add_entry(csv_entry, new_list) end)
+  end
+
+  defp add_entry(csv_entry, todo_list) do
+    date = Date.from_iso8601!(Enum.at(csv_entry, 0))
+    title = Enum.at(csv_entry, 1)
+    new_entry = %{date: date, title: title}
+    TodoList.add_entry(todo_list, new_entry)
   end
 end
