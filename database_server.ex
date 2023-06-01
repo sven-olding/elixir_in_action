@@ -4,6 +4,18 @@ defmodule DatabaseServer do
   # DatabaseServer.get_result()
   # DatabaseServer.run_async(server_pid, "query 2")
   # DatabaseServer.get_result()
+
+  # run concurrently:
+  # pool = Enum.map(1..100, fn _ -> DatabaseServer.start() end)
+  # Enum.each(
+  #   1..5,
+  #   fn query_def ->
+  #     server_pid = Enum.at(pool, :rand.uniform(100) - 1)
+  #     DatabaseServer.run_async(server_pid, query_def)
+  #    end)
+
+  # -> collect results:
+  # Enum.map(1..5, fn _ -> DatabaseServer.get_result() end)
   def start do
     spawn(&loop/0)
   end
