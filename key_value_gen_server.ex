@@ -17,10 +17,12 @@ defmodule KeyValueStore do
     {:ok, %{}}
   end
 
+  @impl GenServer
   def handle_cast({:put, key, value}, state) do
     {:noreply, Map.put(state, key, value)}
   end
 
+  @impl GenServer
   def handle_call({:get, key}, _, state) do
     {:reply, Map.get(state, key), state}
   end
