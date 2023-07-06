@@ -45,4 +45,8 @@ defmodule Todo.List do
       | entries: new_entries
     }
   end
+
+  def size(todo_list) do
+    Kernel.map_size(todo_list.entries)
+  end
 end
